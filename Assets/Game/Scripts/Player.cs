@@ -14,8 +14,9 @@ public class Player : MonoBehaviour
     private Vector3 dir_init,moveDir;
     private Animator animator;
     private Vector3 fall_speed;
+    public float hand_baskrtball_distance;
     public enum CharacterState { Normal,Dribbling}
-    private CharacterState currentState = CharacterState.Normal;
+    public CharacterState currentState = CharacterState.Normal;
     private void Start()
     {
         animator = GetComponent<Animator>();
@@ -28,8 +29,11 @@ public class Player : MonoBehaviour
         {
             case CharacterState.Normal:
                 PlayerMovement();
+                animator.SetFloat("Speed", dir_init.magnitude);
                 break;
             case CharacterState.Dribbling:
+                PlayerMovement();
+                animator.SetBool("pickup", true);
                 break;
         }
     }
@@ -39,7 +43,7 @@ public class Player : MonoBehaviour
         horizontal = Input.GetAxis("Horizontal");
         vertical = Input.GetAxis("Vertical");
         dir_init = new Vector3(horizontal, 0, vertical);
-        animator.SetFloat("Speed", dir_init.magnitude);
+        
         moveDir = FollowedCamera.forward * vertical + FollowedCamera.right * horizontal;
         moveDir.y = 0;
         if (moveDir != Vector3.zero)
