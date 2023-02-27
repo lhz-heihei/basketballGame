@@ -5,22 +5,22 @@ using UnityEngine;
 
 public class Player : MonoBehaviour
 {
-    public float move_speed;
-    private float horizontal, vertical;
-    public CharacterController cc;
-    public Transform FollowedCamera;
-    private float gravity = -9.8f;
-    public float jump_speed;
-    private Vector3 dir_init,moveDir;
-    private Animator animator;
-    private Vector3 fall_speed;
-    public float hand_baskrtball_distance;
-    public enum CharacterState { Normal,Dribbling}
-    public CharacterState currentState = CharacterState.Normal;
+    public float move_speed;  //移动速度
+    private float horizontal, vertical;//水平、垂直虚拟轴
+    public CharacterController cc;  //获得CharacterController组件
+    public Transform FollowedCamera; //相机的transform组件
+    private float gravity = -9.8f;  //重力
+    public float jump_speed;       //跳跃初速度
+    private Vector3 dir_init,moveDir;  //移动方向
+    private Animator animator;      //动画器
+    private Vector3 fall_speed;     //竖直方向移动速度
+    public float hand_baskrtball_distance;  //手与篮球之间的距离
+    public enum CharacterState { Normal,Dribbling,Shooting}   //状态枚举
+    public CharacterState currentState = CharacterState.Normal;  //当前状态
     private void Start()
     {
-        animator = GetComponent<Animator>();
-        fall_speed = Vector3.zero;
+        animator = GetComponent<Animator>();  //动画器
+        fall_speed = Vector3.zero;            //初始化
     }
     private void FixedUpdate()
     {
@@ -29,11 +29,12 @@ public class Player : MonoBehaviour
         {
             case CharacterState.Normal:
                 PlayerMovement();
-                animator.SetFloat("Speed", dir_init.magnitude);
+                animator.SetFloat("Speed", dir_init.magnitude);//Speed数值控制跑步动画
                 break;
             case CharacterState.Dribbling:
                 PlayerMovement();
-                animator.SetBool("pickup", true);
+                break;
+            case CharacterState.Shooting:
                 break;
         }
     }
@@ -63,13 +64,15 @@ public class Player : MonoBehaviour
         }
     }
 
-    public void switchToNewState(CharacterState newState)
+    public void switchToNewState(CharacterState newState) //切换新状态
     {
         switch (currentState)
         {
             case CharacterState.Normal:
                 break;
             case CharacterState.Dribbling:
+                break;
+            case CharacterState.Shooting:
                 break;
         }
 
@@ -78,8 +81,12 @@ public class Player : MonoBehaviour
             case CharacterState.Normal:
                 break;
             case CharacterState.Dribbling:
+                animator.SetBool("pickup", true);  //切换后执行一次捡球，进入运球动画
+                break;
+            case CharacterState.Shooting:
                 break;
         }
+        currentState = newState;
     }
 
 }
